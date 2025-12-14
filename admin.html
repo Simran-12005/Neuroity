@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Neuroity - Admin Results</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #0f0f1a;
+    color: white;
+    padding: 30px;
+}
+h2 {
+    text-align: center;
+    color: #8da3ff;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+th, td {
+    border: 1px solid #555;
+    padding: 12px;
+    text-align: center;
+}
+th {
+    background: #634aff;
+}
+tr:nth-child(even) {
+    background: rgba(255,255,255,0.05);
+}
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #634aff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+}
+</style>
+</head>
+<body>
+
+<h2>📊 Neuroity – Saved Results</h2>
+
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Age</th>
+<th>Score</th>
+<th>Category</th>
+<th>Date</th>
+</tr>
+</thead>
+<tbody id="resultTable"></tbody>
+</table>
+
+<button onclick="clearResults()">🗑 Clear All Results</button>
+
+<script>
+const data = JSON.parse(localStorage.getItem("neuroity_results")) || [];
+const table = document.getElementById("resultTable");
+
+if (data.length === 0) {
+    table.innerHTML = `<tr><td colspan="5">No results found</td></tr>`;
+} else {
+    data.forEach(r => {
+        table.innerHTML += `
+            <tr>
+                <td>${r.name}</td>
+                <td>${r.age}</td>
+                <td>${r.score}</td>
+                <td>${r.category}</td>
+                <td>${r.date}</td>
+            </tr>
+        `;
+    });
+}
+
+function clearResults() {
+    if (confirm("Delete all stored results?")) {
+        localStorage.removeItem("neuroity_results");
+        location.reload();
+    }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neuroity - Questionnaire</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        background: linear-gradient(135deg, #7ea1ff, #c987ff);
+        font-family: "Poppins", sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        overflow: hidden;
+    }
+
+    .card {
+        background: #ffffff25;
+        width: 350px;
+        padding: 25px;
+        border-radius: 20px;
+        text-align: center;
+        backdrop-filter: blur(10px);
+        box-shadow: 0px 0px 25px #00000030;
+        animation: fadeIn 0.7s ease;
+    }
+
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    button {
+        margin: 10px 0;
+        width: 100%;
+        padding: 12px;
+        border-radius: 10px;
+        border: none;
+        font-size: 17px;
+        cursor: pointer;
+        transition: .3s;
+    }
+
+    button:hover {
+        opacity: 0.8;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+<script>
+const questions = [
+    { q: "How was your sleep last night?", options: [
+        { text: "Good", score: 0 },
+        { text: "Average", score: 5 },
+        { text: "Bad", score: 10 }
+    ]},
+
+    { q: "How often do you find it hard to focus today?", options: [
+        { text: "Not at all", score: 0 },
+        { text: "Sometimes", score: 5 },
+        { text: "A lot", score: 10 }
+    ]},
+
+    { q: "What best describes your mood right now?", options: [
+        { text: "Calm", score: 0 },
+        { text: "Neutral", score: 5 },
+        { text: "Irritated/Anxious", score: 10 }
+    ]},
+
+    { q: "Are you avoiding people or tasks today?", options: [
+        { text: "No", score: 0 },
+        { text: "A little", score: 5 },
+        { text: "Yes", score: 10 }
+    ]},
+
+    { q: "How motivated do you feel today?", options: [
+        { text: "Motivated", score: 0 },
+        { text: "Okay-ish", score: 5 },
+        { text: "Not motivated", score: 10 }
+    ]}
+];
+
+let index = 0;
+let totalScore = 0;
+
+function loadQuestion() {
+    document.getElementById("question").innerText = questions[index].q;
+    const optBox = document.getElementById("options");
+    optBox.innerHTML = "";
+
+    questions[index].options.forEach((option) => {
+        const btn = document.createElement("button");
+        btn.innerText = option.text;
+        btn.onclick = function() { next(option.score); };
+        btn.style.background = "#5c4cff";
+        btn.style.color = "white";
+        optBox.appendChild(btn);
+    });
+}
+
+function next(score) {
+    totalScore += score;
+    index++;
+
+    if (index < questions.length) {
+        loadQuestion();
+    } else {
+        localStorage.setItem("neuroity_score", totalScore);
+        window.location.href = "result.html";
+    }
+}
+
+window.onload = loadQuestion;
+</script>
+
+</head>
+
+<body>
+    <div class="card">
+        <h2 id="question"></h2>
+        <div id="options"></div>
+    </div>
+</body>
+
+</html>

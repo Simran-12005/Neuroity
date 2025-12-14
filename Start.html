@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Neuroity</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: linear-gradient(135deg, #6c8bff, #a06bff);
+        font-family: "Poppins", sans-serif;
+        overflow: hidden;
+    }
+
+    .container {
+        text-align: center;
+        animation: fadeIn 2s ease-in-out;
+        color: white;
+    }
+
+    /* Brain logo with neon aura */
+    .logo {
+        width: 160px;
+        height: 160px;
+        margin: 0 auto;
+        background-image: url('brain.jpg'); /* your local logo */
+        background-size: cover;
+        background-position: center;
+
+        /* Base animation */
+        animation: float 3s ease-in-out infinite;
+
+        /* Glow effect */
+        filter: drop-shadow(0px 0px 15px #ffffffaa);
+        position: relative;
+    }
+
+    /* Neon aura circle behind the brain */
+    .logo::after {
+        content: "";
+        width: 220px;
+        height: 220px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 50%;
+
+        background: radial-gradient(
+            circle,
+            rgba(255,255,255,0.4) 0%,
+            rgba(160,130,255,0.20) 40%,
+            rgba(140,80,255,0.08) 70%,
+            rgba(140,80,255,0) 100%
+        );
+
+        animation: auraPulse 3s infinite ease-in-out;
+        z-index: -1;
+    }
+
+    h1 {
+        margin-top: 25px;
+        font-size: 50px;
+        letter-spacing: 2px;
+        font-weight: 600;
+        animation: slideDown 2s ease;
+    }
+
+    p {
+        font-size: 20px;
+        margin-top: -10px;
+        opacity: 0;
+        animation: fadeInText 2s forwards;
+        animation-delay: 1.4s;
+    }
+
+    /* Loader */
+    .loader {
+        margin: 30px auto;
+        border: 5px solid #ffffff50;
+        border-top: 5px solid #fff;
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        animation: spin 1s linear infinite;
+    }
+
+    /* Animations */
+    @keyframes float {
+        0% { transform: translateY(0); }
+        50% { transform: translateY(-18px); }
+        100% { transform: translateY(0); }
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @keyframes auraPulse {
+        0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+        50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+        100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.9); }
+        to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInText {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+</style>
+
+<script>
+// Redirect to next page after 4 seconds
+setTimeout(() => {
+    window.location.href = "details.html";
+}, 4000);
+</script>
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo"></div>
+        <h1>Neuroity</h1>
+        <p>Bliss and Purity for Your Brain</p>
+        <div class="loader"></div>
+    </div>
+</body>
+</html>

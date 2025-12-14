@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neuroity - Smart Questionnaire</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        background: linear-gradient(135deg, #8da3ff, #c88aff);
+        font-family: "Poppins", sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        overflow: hidden;
+    }
+
+    /* Floating brain logo */
+    .page-logo {
+        width: 65px;
+        height: 65px;
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-image: url('brain.jpg');
+        background-size: cover;
+        background-position: center;
+        border-radius: 50%;
+        filter: drop-shadow(0 0 12px #ffffffaa);
+        animation: pulse 3s ease-in-out infinite;
+        z-index: 9999;
+    }
+    
+
+    @keyframes pulse {
+        0% { transform: translateX(-50%) scale(1); opacity: 0.9; }
+        50% { transform: translateX(-50%) scale(1.12); opacity: 1; }
+        100% { transform: translateX(-50%) scale(1); opacity: 0.9; }
+    }
+
+    /* Question card */
+    .card {
+        background: #ffffff25;
+        width: 360px;
+        padding: 25px;
+        border-radius: 20px;
+        text-align: center;
+        backdrop-filter: blur(10px);
+        box-shadow: 0px 0px 25px #00000030;
+        animation: fadeIn 0.7s ease;
+        margin-top: 80px;
+    }
+
+    h2 { margin-bottom: 20px; }
+
+    button {
+        margin: 10px 0;
+        width: 100%;
+        padding: 12px;
+        border-radius: 10px;
+        border: none;
+        font-size: 17px;
+        cursor: pointer;
+        transition: .3s;
+        background: #634aff;
+        color: white;
+    }
+
+    button:hover { opacity: 0.8; }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+</head>
+<body>
+
+<div class="page-logo"></div>
+
+<div class="card">
+    <h2 id="question"></h2>
+    <div id="options"></div>
+</div>
+
+<script>
+let totalScore = 0;
+
+/* ---------------------------------------------------------
+   12 QUESTION DECISION TREE
+   Fully adaptive Akinator-style branching
+--------------------------------------------------------- */
+
+const questions = {
+
+    start: {
+        q: "How was your sleep last night?",
+        options: [
+            { text: "Good", score: 0, next: "focus" },
+            { text: "Average", score: 5, next: "focus" },
+            { text: "Bad", score: 10, next: "tired" }
+        ]
+    },
+
+    tired: {
+        q: "Do you feel tired even after resting?",
+        options: [
+            { text: "Yes", score: 10, next: "focus" },
+            { text: "No", score: 0, next: "focus" }
+        ]
+    },
+
+    focus: {
+        q: "How hard is it to focus today?",
+        options: [
+            { text: "Not at all", score: 0, next: "mood" },
+            { text: "Sometimes", score: 5, next: "distraction" },
+            { text: "A lot", score: 10, next: "distraction" }
+        ]
+    },
+
+    distraction: {
+        q: "Do you get distracted easily today?",
+        options: [
+            { text: "Yes", score: 10, next: "mood" },
+            { text: "No", score: 5, next: "mood" }
+        ]
+    },
+
+    mood: {
+        q: "What best describes your mood?",
+        options: [
+            { text: "Calm", score: 0, next: "motivation" },
+            { text: "Neutral", score: 5, next: "motivation" },
+            { text: "Irritated/Anxious", score: 10, next: "trigger" }
+        ]
+    },
+
+    trigger: {
+        q: "Is your mood due to something specific or general stress?",
+        options: [
+            { text: "Triggered by something", score: 5, next: "motivation" },
+            { text: "General stress", score: 10, next: "motivation" }
+        ]
+    },
+
+    motivation: {
+        q: "How motivated do you feel today?",
+        options: [
+            { text: "Motivated", score: 0, next: "social" },
+            { text: "Okay-ish", score: 5, next: "social" },
+            { text: "Not motivated", score: 10, next: "overthinking" }
+        ]
+    },
+
+    overthinking: {
+        q: "Do you find yourself overthinking today?",
+        options: [
+            { text: "No", score: 0, next: "social" },
+            { text: "A little", score: 5, next: "social" },
+            { text: "Yes", score: 10, next: "social" }
+        ]
+    },
+
+    social: {
+        q: "How social do you feel today?",
+        options: [
+            { text: "Normal", score: 0, next: "symptoms" },
+            { text: "Low", score: 5, next: "symptoms" },
+            { text: "Don't want to talk", score: 10, next: "symptoms" }
+        ]
+    },
+
+    symptoms: {
+        q: "Any physical symptoms today?",
+        options: [
+            { text: "None", score: 0, next: "food" },
+            { text: "Mild headache/tiredness", score: 5, next: "food" },
+            { text: "Strong headache / eye strain", score: 10, next: "food" }
+        ]
+    },
+
+    food: {
+        q: "Did you eat properly today?",
+        options: [
+            { text: "Yes", score: 0, next: "overload" },
+            { text: "Skipped a meal", score: 5, next: "overload" },
+            { text: "Barely ate", score: 10, next: "overload" }
+        ]
+    },
+
+    overload: {
+        q: "Do you feel mentally overloaded?",
+        options: [
+            { text: "No", score: 0, next: "done" },
+            { text: "Slightly", score: 5, next: "done" },
+            { text: "Yes", score: 10, next: "done" }
+        ]
+    }
+};
+
+/* ---------------------- QUIZ ENGINE ---------------------- */
+
+let current = "start";
+
+function loadQuestion() {
+    const q = questions[current];
+    document.getElementById("question").innerText = q.q;
+
+    const optBox = document.getElementById("options");
+    optBox.innerHTML = "";
+
+    q.options.forEach((op) => {
+        const btn = document.createElement("button");
+        btn.innerText = op.text;
+        btn.onclick = function() { next(op.score, op.next); };
+        optBox.appendChild(btn);
+    });
+}
+
+function next(score, nextQuestion) {
+    totalScore += score;
+
+    if (nextQuestion === "done") {
+        localStorage.setItem("neuroity_score", totalScore);
+        window.location.href = "result.html";
+        return;
+    }
+
+    current = nextQuestion;
+    loadQuestion();
+}
+
+window.onload = loadQuestion;
+</script>
+
+</body>
+</html>
